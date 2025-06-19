@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Clientes cadastrados</title>
+
+   <link rel="stylesheet" href="./css/clientes.css">
+</head>
+<body>
+   <div class="container">
+      <h1>Clientes cadastrados</h1>
+      <p>Lista de todos os clientes cadastrados no sistema.</p>
+      <div class="table-wrapper">
+         <table class="tabela-clientes">
+            <thead>
+               <tr>
+                  <th>Nome</th>
+                  <th>CPF</th>
+                  <th>Telefone</th>
+                  <th>Email</th>
+                  <th>Plano</th>
+                  <th>Início</th>
+                  <th>Vencimento</th>
+                  <th>Status</th>
+                  <th>Ações</th>
+               </tr>
+            </thead>
+            <tbody id="lista-clientes"></tbody>
+         </table>
+      </div>
+      <a href="index.html" class="botao voltar">← Voltar</a>
+   </div>
+   <script type="module" src="js/clientes.js"></script>
+</body>
+</html>
