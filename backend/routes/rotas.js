@@ -1,25 +1,54 @@
 const express = require('express');
 const router = express.Router();
 const Cliente = require('../models/Cliente');
+const { calcularStatus } = require('../utils/statusHelper');
+
 
 // Rota para criar um novo cliente
 router.post('/', async (req, res) => {
-    try {
-        const novoCliente = new Cliente(req.body);
-        const savedCliente = await novoCliente.save();
-        console.log('SALVO:', savedCliente);
-        res.status(201).json(savedCliente);
-    } catch (err) {
-       console.error('❌Erro ao salvar cliente:', err);
-       res.status(500).json({ error: 'Erro ao salvar cliente' });   
-    }
+  try {
+    const { nome, cpf, telefone, email, plano, dataInicio, dataVencimento } = req.body;
+
+    const status = calcularStatus(dataVencimento);
+
+    const novoCliente = new Cliente({
+      nome,
+      cpf,
+      telefone,
+      email,
+      plano,
+      dataInicio,
+      dataVencimento,
+      status
+    });
+
+    console.log('Status calculado:', status);
+
+    const savedCliente = await novoCliente.save();
+    console.log('SALVO:', savedCliente);
+    res.status(201).json(savedCliente);
+  } catch (err) {
+    console.error('❌Erro ao salvar cliente:', err);
+    res.status(500).json({ error: 'Erro ao salvar cliente' });   
+  }
 });
+
 
 // Rota para buscar todos os clientes
 router.get('/', async (req, res) => {
     try {
         const clientes = await Cliente.find();
-        res.json(clientes);
+        const atualizados = await Promise.all(
+            clientes.map(async (cliente) => {
+                const statusAtual = calcularStatus(cliente.dataVencimento);
+                if (cliente.status !== statusAtual) {
+                    cliente.status = statusAtual;
+                    await cliente.save();
+                }
+                return cliente;
+            })
+        )
+        res.json(atualizados);
     } catch (err) {
         console.error('❌Erro ao buscar clientes:', err);
         res.status(500).json({ error: 'Erro ao buscar clientes' });

@@ -8,3 +8,9 @@ export async function getClientes() {
   return await res.json();
 }
 
+export async function deleteCliente(id) {
+   return await fetch(`${apiURL}/${id}`, {
+     method: 'DELETE'
+   });
+}
+
